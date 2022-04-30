@@ -1,10 +1,11 @@
-import { AlgoModule } from './providers/algo/algo.module';
+import { NftModule } from '../nft/nft.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
+import { config } from 'dotenv';
+config();
 @Module({
-  imports: [AlgoModule],
+  imports: [NftModule],
   controllers: [AppController],
   providers: [AppService],
 })
