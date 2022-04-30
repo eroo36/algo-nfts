@@ -18,6 +18,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   fs.writeFileSync('./swagger.json', JSON.stringify(document, null, 2));
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
