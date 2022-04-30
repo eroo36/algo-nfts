@@ -15,7 +15,7 @@ export class AlgoService {
 
   constructor(network: Network) {
     this.config =
-      network === Network.TESTNET ? TESTNET_ALGO_CONF : MAINNET_ALGO_CONF;
+      network === Network.ALGORAND_TESTNET ? TESTNET_ALGO_CONF : MAINNET_ALGO_CONF;
     this.client = new Algodv2(
       this.config.apiKeyHeader,
       this.config.clientUri,

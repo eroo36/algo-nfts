@@ -9,8 +9,8 @@ export interface AlgoConfig {
   sk: string;
 }
 export enum Network {
-  TESTNET = 'testnet',
-  MAINNET = 'mainnet',
+  ALGORAND_TESTNET = 'algorand-testnet',
+  ALGORAND_MAINNET = 'algorand-mainnet',
 }
 
 export type CreateAssetTxn = {

@@ -27,7 +27,10 @@ export class NftService {
     Logger.log('Created NFT: ' + nft['asset-index']);
     return {
       assetId: nft['asset-index'],
-      algoAccount: acc,
+      algoAccount: {
+        publicAddress: acc.addr,
+        mnemonicKey: acc.sk,
+      },
     };
   }
 }

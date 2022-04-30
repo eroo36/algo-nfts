@@ -1,0 +1,91 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/nft": {
+      "post": {
+        "operationId": "NftController_mintNft",
+        "summary": "Create an NFT",
+        "description": "Currently only algorand-testnet is supported,",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MintNftDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "nft"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Algo NFTs",
+    "description": "An API for managing NFTs",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "MintNftDTO": {
+        "type": "object",
+        "properties": {
+          "assetName": {
+            "type": "string",
+            "description": "The name of the asset/nft",
+            "example": "AlgoKitten"
+          },
+          "unitName": {
+            "type": "string",
+            "description": "The name of the unit/token",
+            "example": "TNFT"
+          },
+          "metadataUrl": {
+            "type": "string",
+            "description": "JSON file url containing the metadata of the nft, standards for the metadata can be found on https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0069.md \n \n      Ideally these files are hosted on IPFS. To easily upload files to IPFS you can use services like https://pinata.cloud or https://nft.storage",
+            "examples": [
+              "https://ipfs.io/ipfs/QmbcqLtgWsB6E4PPwoKSYPJaM8c7EsjGLPn48owdRQWy42",
+              "https://gateway.pinata.cloud/ipfs/QmbcqLtgWsB6E4PPwoKSYPJaM8c7EsjGLPn48owdRQWy42"
+            ]
+          },
+          "network": {
+            "type": "string",
+            "description": "The name of the asset/nft",
+            "enum": [
+              "algorand-testnet",
+              "algorand-mainnet"
+            ]
+          }
+        },
+        "required": [
+          "assetName",
+          "unitName",
+          "metadataUrl",
+          "network"
+        ]
+      }
+    }
+  }
+}

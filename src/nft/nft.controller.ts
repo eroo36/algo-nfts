@@ -17,10 +17,10 @@ export class NftController {
   @Post()
   @ApiOperation({
     summary: 'Create an NFT',
-    description: 'Currently only testnet is supported',
+    description: 'Currently only algorand-testnet is supported,',
   })
   async mintNft(@Body() body: MintNftDTO) {
-    if (body.network === Network.MAINNET)
+    if (body.network === Network.ALGORAND_MAINNET)
       throw new HttpException(
         'Mainnet not yet supported',
         HttpStatus.METHOD_NOT_ALLOWED,

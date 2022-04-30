@@ -27,6 +27,7 @@ export class MintNftDTO {
   metadataUrl: string;
   @ApiProperty({
     description: 'The name of the asset/nft',
+    enum: Network,
   })
   @IsEnum(Network)
   network: Network;
