@@ -1,11 +1,30 @@
-export const TESTNET_CONF: AlgoConfig = {
-  apiKeyHeader: { 'x-api-key': 'LZddbAAiHU19FdC6j6Xxa6TaoiImRXlk8YhLNCgI' },
-  indexerUri: 'https://testnet-algorand.api.purestake.io/idx2',
-  clientUri: 'https://testnet-algorand.api.purestake.io/ps2',
-};
+import { config } from 'dotenv';
+config();
 
-interface AlgoConfig {
+export interface AlgoConfig {
   apiKeyHeader: { 'x-api-key': string };
   indexerUri: string;
   clientUri: string;
+  addr: string;
+  sk: string;
 }
+export enum Network {
+  TESTNET = 'testnet',
+  MAINNET = 'mainnet',
+}
+
+export const TESTNET_ALGO_CONF: AlgoConfig = {
+  apiKeyHeader: { 'x-api-key': process.env.ALGO_API_KEY },
+  indexerUri: 'https://mainnet-algorand.api.purestake.io/idx2',
+  clientUri: 'https://mainnet-algorand.api.purestake.io/ps2',
+  addr: process.env.TESTNET_ALGO_ACCOUNT,
+  sk: process.env.TESTNET_ALGO_SECRET,
+};
+
+export const MAINNET_ALGO_CONF: AlgoConfig = {
+  apiKeyHeader: { 'x-api-key': process.env.ALGO_API_KEY },
+  indexerUri: 'https://mainnet-algorand.api.purestake.io/idx2',
+  clientUri: 'https://mainnet-algorand.api.purestake.io/ps2',
+  addr: process.env.MAINNET_ALGO_ACCOUNT,
+  sk: process.env.MAINNET_ALGO_SECRET,
+};

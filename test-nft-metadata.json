@@ -1,0 +1,11 @@
+{
+    "standard": "arc69",
+    "description": "arc69 theme song",
+    "external_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "mime_type": "video/mp4",
+    "properties": {
+      "Bass":"Groovy", 
+      "Vibes":"Funky", 
+      "Overall":"Good stuff"
+    }
+  }
