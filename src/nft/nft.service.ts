@@ -33,4 +33,11 @@ export class NftService {
       },
     };
   }
+
+  public async getNft(params: { assetId: number; network: Network }) {
+    const { assetId, network } = params;
+    const algoService = new AlgoService(network);
+    const nft = await algoService.getAssetByID(assetId);
+    return nft;
+  }
 }

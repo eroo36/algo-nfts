@@ -1,17 +1,6 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/": {
-      "get": {
-        "operationId": "AppController_getHello",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      }
-    },
     "/nft": {
       "post": {
         "operationId": "NftController_mintNft",
@@ -30,7 +19,69 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "Successfully created NFT",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MintNftResponseDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameters sent"
+          },
+          "405": {
+            "description": "Currently Mainnet is not available"
+          }
+        },
+        "tags": [
+          "nft"
+        ]
+      },
+      "get": {
+        "operationId": "NftController_getNft",
+        "summary": "Find an NFT by assetId",
+        "description": "Gets the details of an NFT by its assetId",
+        "parameters": [
+          {
+            "name": "assetId",
+            "required": true,
+            "in": "query",
+            "description": "ID of the asset/nft",
+            "example": 86862666,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "network",
+            "required": true,
+            "in": "query",
+            "description": "The name of the asset/nft",
+            "example": "algorand-testnet",
+            "schema": {
+              "enum": [
+                "algorand-testnet",
+                "algorand-mainnet"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully found the NFT",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNftResponseDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Asset not found"
           }
         },
         "tags": [
@@ -41,7 +92,7 @@
   },
   "info": {
     "title": "Algo NFTs",
-    "description": "An API for managing NFTs",
+    "description": "An API for managing Algorand NFTs",
     "version": "1.0",
     "contact": {}
   },
@@ -60,7 +111,7 @@
           "unitName": {
             "type": "string",
             "description": "The name of the unit/token",
-            "example": "TNFT"
+            "example": "AKNFT"
           },
           "metadataUrl": {
             "type": "string",
@@ -76,7 +127,8 @@
             "enum": [
               "algorand-testnet",
               "algorand-mainnet"
-            ]
+            ],
+            "example": "algorand-testnet"
           }
         },
         "required": [
@@ -84,6 +136,58 @@
           "unitName",
           "metadataUrl",
           "network"
+        ]
+      },
+      "MintNftResponseDTO": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "number",
+            "description": "ID of the asset/nft",
+            "example": 86862666
+          },
+          "algoAccount": {
+            "type": "object",
+            "description": "Algorand Account that has the NFT in it",
+            "example": {
+              "publicAddress": "CJAQ2O2SMRNI6TB53C36X2C2WDDC64XJ5IBGNQF3SR2NOXUKZH62WKQCEA",
+              "mnemonicKey": "jaguar dinosaur mammal two small ..."
+            }
+          }
+        },
+        "required": [
+          "assetId",
+          "algoAccount"
+        ]
+      },
+      "GetNftResponseDTO": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "number",
+            "description": "ID of the asset/nft",
+            "example": 86862666
+          },
+          "params": {
+            "type": "object",
+            "description": "Details of the asset",
+            "example": {
+              "creator": "ZW5AMTXITMRZJV7IZ7MZF6ISJ56HZ63SYBWVZQRIH4KBS26L22J74BX3HI",
+              "decimals": 0,
+              "default-frozen": false,
+              "name": "test-nft",
+              "name-b64": "dGVzdC1uZnQ=",
+              "total": 1,
+              "unit-name": "TNFT",
+              "unit-name-b64": "VE5GVA==",
+              "url": "https://ipfs.io/ipfs/QmbcqLtgWsB6E4PPwoKSYPJaM8c7EsjGLPn48owdRQWy42",
+              "url-b64": "aHR0cHM6Ly9pcGZzLmlvL2lwZnMvUW1iY3FMdGdXc0I2RTRQUHdvS1NZUEphTThjN0VzakdMUG40OG93ZFJRV3k0Mg=="
+            }
+          }
+        },
+        "required": [
+          "index",
+          "params"
         ]
       }
     }

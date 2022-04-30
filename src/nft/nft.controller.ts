@@ -1,13 +1,29 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiMethodNotAllowedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Network } from 'src/providers/algo/algo.config';
-import { MintNftDTO } from './nft.dto';
+import {
+  GetNftDTO,
+  GetNftResponseDTO,
+  MintNftDTO,
+  MintNftResponseDTO,
+} from './nft.dto';
 import { NftService } from './nft.service';
 
 @Controller('/nft')
@@ -19,6 +35,15 @@ export class NftController {
     summary: 'Create an NFT',
     description: 'Currently only algorand-testnet is supported,',
   })
+  @ApiBadRequestResponse({ description: 'Invalid parameters sent' })
+  @ApiMethodNotAllowedResponse({
+    description: 'Currently Mainnet is not available',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Successfully created NFT',
+    type: MintNftResponseDTO,
+  })
   async mintNft(@Body() body: MintNftDTO) {
     if (body.network === Network.ALGORAND_MAINNET)
       throw new HttpException(
@@ -26,5 +51,19 @@ export class NftController {
         HttpStatus.METHOD_NOT_ALLOWED,
       );
     return await this.nftService.mintNft(body);
+  }
+
+  @Get()
+  @ApiOperation({
+    summary: 'Find an NFT by assetId',
+    description: 'Gets the details of an NFT by its assetId',
+  })
+  @ApiOkResponse({
+    description: 'Successfully found the NFT',
+    type: GetNftResponseDTO,
+  })
+  @ApiNotFoundResponse({ description: 'Asset not found' })
+  async getNft(@Query() query: GetNftDTO) {
+    return await this.nftService.getNft(query);
   }
 }

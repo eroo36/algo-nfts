@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { HttpException, Logger } from '@nestjs/common';
 import algosdk, { Account, Algodv2, Indexer, Transaction } from 'algosdk';
 import {
   AlgoConfig,
@@ -15,7 +15,9 @@ export class AlgoService {
 
   constructor(network: Network) {
     this.config =
-      network === Network.ALGORAND_TESTNET ? TESTNET_ALGO_CONF : MAINNET_ALGO_CONF;
+      network === Network.ALGORAND_TESTNET
+        ? TESTNET_ALGO_CONF
+        : MAINNET_ALGO_CONF;
     this.client = new Algodv2(
       this.config.apiKeyHeader,
       this.config.clientUri,
@@ -132,5 +134,15 @@ export class AlgoService {
     });
     const completedTxn = await this.signAndSendTxn(txn, this.config.sk);
     return completedTxn;
+  }
+
+  public async getAssetByID(assetID: number) {
+    try {
+      const asset = await this.client.getAssetByID(assetID).do();
+      return asset;
+    } catch (error) {
+      Logger.error(error);
+      throw new HttpException(error.message, error.status);
+    }
   }
 }
