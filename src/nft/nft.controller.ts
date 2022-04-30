@@ -1,12 +1,30 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpException,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Network } from 'src/providers/algo/algo.config';
+import { MintNftDTO } from './nft.dto';
 import { NftService } from './nft.service';
 
-@Controller()
+@Controller('/nft')
+@ApiTags('nft')
 export class NftController {
   constructor(private readonly nftService: NftService) {}
-
-  @Get('/nft')
-  test() {
-    return this.nftService.test();
+  @Post()
+  @ApiOperation({
+    summary: 'Create an NFT',
+    description: 'Currently only testnet is supported',
+  })
+  async mintNft(@Body() body: MintNftDTO) {
+    if (body.network === Network.MAINNET)
+      throw new HttpException(
+        'Mainnet not yet supported',
+        HttpStatus.METHOD_NOT_ALLOWED,
+      );
+    return await this.nftService.mintNft(body);
   }
 }
