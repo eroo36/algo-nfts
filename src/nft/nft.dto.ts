@@ -1,7 +1,68 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsEnum, IsNumber, IsString, IsUrl, Max, Min } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Max,
+  Min,
+} from 'class-validator';
 import { Network } from 'src/providers/algo/algo.config';
+
+export class ARC69Metadata {
+  @ApiProperty({
+    description: '(Required) Describes the standard used.',
+    example: 'ARC69',
+  })
+  @IsString()
+  standard: string;
+  @ApiProperty({
+    description: 'Describes the asset to which this token represents.',
+    example: 'A nice NFT description',
+  })
+  @IsString()
+  description: string;
+  @ApiProperty({
+    description: `A URI pointing to an external website. Borrowed from Open Sea's metadata format (https://docs.opensea.io/docs/metadata-standards).\n
+      external_url is defined similarly to the Asset URL parameter au. However, contrary to the Asset URL, the external_url does not need to link to the digital media file.`,
+    example:
+      'https://nftstorage.link/ipfs/bafybeid4gwmvbza257a7rx52bheeplwlaogshu4rgse3eaudfkfm7tx2my/image.png',
+  })
+  @IsUrl()
+  @IsOptional()
+  external_url?: string;
+  @ApiProperty({
+    description:
+      'A URI pointing to an image,video ex. Borrowed from Open Sea"s metadata format (https://docs.opensea.io/docs/metadata-standards).',
+    example:
+      'https://nftstorage.link/ipfs/bafybeid4gwmvbza257a7rx52bheeplwlaogshu4rgse3eaudfkfm7tx2my/image.png',
+  })
+  @IsUrl()
+  media_url: string;
+  @ApiProperty({
+    description:
+      'Properties following the EIP-1155 "simple properties" format. (https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1155.md#erc-1155-metadata-uri-json-schema)',
+  })
+  @IsObject()
+  @IsOptional()
+  properties?: { [key: string]: string };
+  @ApiProperty({
+    description: 'Describes the MIME type of the ASA`s URL ("au" field)',
+  })
+  @IsString()
+  mime_type: string;
+  @ApiProperty({
+    description:
+      'Deprecated. New NFTs should define attributes with the simple `properties` object. Marketplaces should support both the `properties` object and the `attributes` array). The `attributes` array follows Open Sea"s format: https://docs.opensea.io/docs/metadata-standards#attributes',
+  })
+  @IsArray()
+  @IsOptional()
+  attributes?: any[];
+}
 
 export class MintNftDTO {
   @ApiProperty({
@@ -17,15 +78,10 @@ export class MintNftDTO {
   @IsString()
   unitName: string;
   @ApiProperty({
-    description: `JSON file url containing the metadata of the nft, standards for the metadata can be found on https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0069.md \n 
-      Ideally these files are hosted on IPFS. To easily upload files to IPFS you can use services like https://pinata.cloud or https://nft.storage`,
-    examples: [
-      'https://ipfs.io/ipfs/QmbcqLtgWsB6E4PPwoKSYPJaM8c7EsjGLPn48owdRQWy42',
-      'https://gateway.pinata.cloud/ipfs/QmbcqLtgWsB6E4PPwoKSYPJaM8c7EsjGLPn48owdRQWy42',
-    ],
+    description: `JSON object containing the metadata of the nft, standards for the metadata can be found on https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0069.md`,
   })
-  @IsUrl()
-  metadataUrl: string;
+  @Type(() => ARC69Metadata)
+  metadata: ARC69Metadata;
   @ApiProperty({
     description: 'The name of the asset/nft',
     enum: Network,

@@ -1,16 +1,19 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { NFTStorage } from 'nft.storage';
 import { Network } from 'src/providers/algo/algo.config';
 import { AlgoService } from 'src/providers/algo/algo.service';
+import { ARC69Metadata } from './nft.dto';
 
 @Injectable()
 export class NftService {
   public async mintNft(params: {
     assetName: string;
     unitName: string;
-    metadataUrl: string;
+    metadata: ARC69Metadata;
     network: Network;
   }) {
-    const { assetName, unitName, metadataUrl, network } = params;
+    const { assetName, unitName, metadata, network } = params;
+    const cid = await this.storeMetadata(metadata);
     const algoService = new AlgoService(network);
     const acc = algoService.generateAccount();
     await algoService.sendAlgos({
@@ -22,7 +25,7 @@ export class NftService {
       assetName,
       unitName,
       from: acc,
-      metadataUrl,
+      metadataUrl: `ipfs://${cid}`,
     });
     Logger.log('Created NFT: ' + nft['asset-index']);
     return {
@@ -34,6 +37,14 @@ export class NftService {
     };
   }
 
+  public async storeMetadata(metadata: ARC69Metadata) {
+    const client = new NFTStorage({ token: process.env.NFT_STORAGE_KEY });
+    const blob = new Blob([JSON.stringify(metadata)], {
+      type: 'application/json',
+    });
+    const cid = await client.storeBlob(blob);
+    return cid;
+  }
   public async getNft(params: { assetId: number; network: Network }) {
     const { assetId, network } = params;
     const algoService = new AlgoService(network);

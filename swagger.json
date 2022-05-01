@@ -100,6 +100,55 @@
   "servers": [],
   "components": {
     "schemas": {
+      "ARC69Metadata": {
+        "type": "object",
+        "properties": {
+          "standard": {
+            "type": "string",
+            "description": "(Required) Describes the standard used.",
+            "example": "ARC69"
+          },
+          "description": {
+            "type": "string",
+            "description": "Describes the asset to which this token represents.",
+            "example": "A nice NFT description"
+          },
+          "external_url": {
+            "type": "string",
+            "description": "A URI pointing to an external website. Borrowed from Open Sea's metadata format (https://docs.opensea.io/docs/metadata-standards).\n\n      external_url is defined similarly to the Asset URL parameter au. However, contrary to the Asset URL, the external_url does not need to link to the digital media file.",
+            "example": "https://nftstorage.link/ipfs/bafybeid4gwmvbza257a7rx52bheeplwlaogshu4rgse3eaudfkfm7tx2my/image.png"
+          },
+          "media_url": {
+            "type": "string",
+            "description": "A URI pointing to an image,video ex. Borrowed from Open Sea\"s metadata format (https://docs.opensea.io/docs/metadata-standards).",
+            "example": "https://nftstorage.link/ipfs/bafybeid4gwmvbza257a7rx52bheeplwlaogshu4rgse3eaudfkfm7tx2my/image.png"
+          },
+          "properties": {
+            "type": "object",
+            "description": "Properties following the EIP-1155 \"simple properties\" format. (https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1155.md#erc-1155-metadata-uri-json-schema)"
+          },
+          "mime_type": {
+            "type": "string",
+            "description": "Describes the MIME type of the ASA`s URL (\"au\" field)"
+          },
+          "attributes": {
+            "description": "Deprecated. New NFTs should define attributes with the simple `properties` object. Marketplaces should support both the `properties` object and the `attributes` array). The `attributes` array follows Open Sea\"s format: https://docs.opensea.io/docs/metadata-standards#attributes",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "standard",
+          "description",
+          "external_url",
+          "media_url",
+          "properties",
+          "mime_type",
+          "attributes"
+        ]
+      },
       "MintNftDTO": {
         "type": "object",
         "properties": {
@@ -113,12 +162,12 @@
             "description": "The name of the unit/token",
             "example": "AKNFT"
           },
-          "metadataUrl": {
-            "type": "string",
-            "description": "JSON file url containing the metadata of the nft, standards for the metadata can be found on https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0069.md \n \n      Ideally these files are hosted on IPFS. To easily upload files to IPFS you can use services like https://pinata.cloud or https://nft.storage",
-            "examples": [
-              "https://ipfs.io/ipfs/QmbcqLtgWsB6E4PPwoKSYPJaM8c7EsjGLPn48owdRQWy42",
-              "https://gateway.pinata.cloud/ipfs/QmbcqLtgWsB6E4PPwoKSYPJaM8c7EsjGLPn48owdRQWy42"
+          "metadata": {
+            "description": "JSON object containing the metadata of the nft, standards for the metadata can be found on https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0069.md",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ARC69Metadata"
+              }
             ]
           },
           "network": {
@@ -134,7 +183,7 @@
         "required": [
           "assetName",
           "unitName",
-          "metadataUrl",
+          "metadata",
           "network"
         ]
       },
